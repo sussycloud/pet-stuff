@@ -1,0 +1,99 @@
+local ScreenGui = Instance.new("ScreenGui")
+local petSpawnerFrame = Instance.new("Frame")
+local petNameTextbox = Instance.new("TextBox")
+local spawnButton = Instance.new("TextButton")
+local petLabel = Instance.new("TextLabel")
+local uiCornerSpawnerFrame = Instance.new("UICorner")
+local uiCornerPetNameTextbox = Instance.new("UICorner")
+local uiCornerSpawnButton = Instance.new("UICorner")
+local uiStrokeSpawnerFrame = Instance.new("UIStroke")
+local Pets = require(game:GetService("ReplicatedStorage").Library.Directory.Pets)
+
+-- Set parent for ScreenGui
+ScreenGui.Parent = game:GetService("CoreGui")
+
+-- Pet Spawner UI
+petSpawnerFrame.Name = "PetSpawnerFrame"
+petSpawnerFrame.Parent = ScreenGui
+petSpawnerFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 40)
+petSpawnerFrame.Size = UDim2.new(0, 300, 0, 150)
+petSpawnerFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+petSpawnerFrame.Active = true
+petSpawnerFrame.Draggable = true -- Makes the UI movable
+
+-- Rounded corners for the UI
+uiCornerSpawnerFrame.CornerRadius = UDim.new(0, 10)
+uiCornerSpawnerFrame.Parent = petSpawnerFrame
+
+-- Outline for the UI
+uiStrokeSpawnerFrame.Parent = petSpawnerFrame
+uiStrokeSpawnerFrame.Thickness = 2
+uiStrokeSpawnerFrame.Color = Color3.fromRGB(70, 130, 180)
+
+-- Pet Spawner Label
+petLabel.Name = "PetLabel"
+petLabel.Parent = petSpawnerFrame
+petLabel.BackgroundTransparency = 1
+petLabel.Size = UDim2.new(1, 0, 0, 40)
+petLabel.Position = UDim2.new(0, 0, 0, 10)
+petLabel.Text = "Pet Spawner"
+petLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+petLabel.TextSize = 24
+petLabel.Font = Enum.Font.GothamBold
+
+-- Pet Name Textbox
+petNameTextbox.Name = "PetNameTextbox"
+petNameTextbox.Parent = petSpawnerFrame
+petNameTextbox.Size = UDim2.new(0, 200, 0, 30)
+petNameTextbox.Position = UDim2.new(0.5, -100, 0.5, -20)
+petNameTextbox.Text = "Enter Pet Name"
+petNameTextbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+petNameTextbox.Font = Enum.Font.Gotham
+petNameTextbox.TextSize = 18
+petNameTextbox.BackgroundColor3 = Color3.fromRGB(50, 50, 90)
+
+uiCornerPetNameTextbox.CornerRadius = UDim.new(0, 10)
+uiCornerPetNameTextbox.Parent = petNameTextbox
+
+-- Spawn Button
+spawnButton.Name = "SpawnButton"
+spawnButton.Parent = petSpawnerFrame
+spawnButton.Size = UDim2.new(0, 200, 0, 40) -- Adjusted size to fit within UI
+spawnButton.Position = UDim2.new(0.5, -100, 0.5, 20) -- Adjusted position
+spawnButton.Text = "Spawn Pet"
+spawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+spawnButton.Font = Enum.Font.GothamBold
+spawnButton.TextSize = 20
+spawnButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180) -- Adjusted to match UI color
+
+uiCornerSpawnButton.CornerRadius = UDim.new(0, 10)
+uiCornerSpawnButton.Parent = spawnButton
+
+-- List of common pets
+local commonPets = {
+    "Cat", "Dog", "Rabbit", "Elephant", "Squirrel"
+}
+
+-- Button Functionality
+spawnButton.MouseButton1Click:Connect(function()
+    local petName = petNameTextbox.Text -- The name entered in the textbox
+
+    -- Loop through all common pets and change them to the new pet name
+    for _, commonPet in ipairs(commonPets) do
+        if Pets[commonPet] then
+            -- Clear the existing pet
+            for i, v in pairs(Pets[commonPet]) do
+                Pets[commonPet][i] = nil
+            end
+
+            -- Change to the new pet name if it exists in the directory
+            if Pets[petName] then
+                for i, v in pairs(Pets[petName]) do
+                    Pets[commonPet][i] = v
+                end
+            end
+        end
+    end
+
+    print("Changed pets to: " .. petName) -- Confirmation message
+end)
